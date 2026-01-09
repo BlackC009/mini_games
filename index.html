@@ -16,23 +16,46 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             background: 
-                radial-gradient(ellipse at 20% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 15% 15%, rgba(0, 245, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 85% 85%, rgba(255, 107, 157, 0.08) 0%, transparent 40%),
                 linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             color: #fff;
-            padding: 20px;
+            padding: 15px;
         }
 
         h1 {
-            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            width: 100%;
+            font-size: clamp(1.3rem, 5vw, 1.8rem);
             font-weight: 300;
-            letter-spacing: 4px;
-            margin-bottom: 40px;
+            letter-spacing: 3px;
             text-align: center;
-            background: linear-gradient(90deg, #fff, #a0a0ff);
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #00f5ff 0%, #667eea 50%, #ff6b9d 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .date-display {
+            width: 100%;
+            font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .time-display {
+            width: 100%;
+            font-size: clamp(2.5rem, 12vw, 4rem);
+            font-weight: 200;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00f5ff 0%, #ff6b9d 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -40,10 +63,10 @@
 
         .games-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: clamp(12px, 4vw, 24px);
-            max-width: min(90vw, 500px);
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             width: 100%;
+            max-width: 400px;
         }
 
         .game-card {
@@ -52,55 +75,116 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: clamp(12px, 3vw, 20px);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            text-decoration: none;
-            color: #fff;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .game-card:hover {
-            background: rgba(102, 126, 234, 0.25);
-            border-color: #667eea;
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            background: rgba(0, 245, 255, 0.08);
+            border-color: rgba(0, 245, 255, 0.25);
+            transform: scale(0.95);
         }
 
         .game-card .icon {
-            font-size: clamp(2rem, 8vw, 3.5rem);
-            margin-bottom: clamp(8px, 2vw, 12px);
+            width: 60%;
+            height: 60%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+
+        .game-card .icon svg {
+            width: 45%;
+            height: 100%;
+            filter: drop-shadow(0 0 4px rgba(0, 245, 255, 0.5)) drop-shadow(0 0 4px rgba(255, 107, 157, 0.5));
         }
 
         .game-card .name {
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-            font-weight: 500;
-            letter-spacing: 2px;
-        }
-
-        .footer {
-            margin-top: 50px;
-            font-size: 0.8rem;
-            opacity: 0.5;
-            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 1px;
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
+    <!-- SVG棋子定义 -->
+    <svg style="display: none;">
+        <defs>
+            <symbol id="circle-piece" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#00f5ff" stroke-width="12" />
+            </symbol>
+            <symbol id="cross-piece" viewBox="0 0 100 100">
+                <path d="M8 8 L92 92 M92 8 L8 92" stroke="#ff6b9d" stroke-width="12" stroke-linecap="round" />
+            </symbol>
+        </defs>
+    </svg>
+
     <h1>小游戏集合</h1>
+    <div class="date-display" id="dateDisplay">2026年1月9日 星期四</div>
+    <div class="time-display" id="timeDisplay">00:00:00</div>
 
     <div class="games-grid">
+        <!-- 第1排 -->
         <a href="tictactoe.html" class="game-card">
-            <span class="icon">❌⭕</span>
-            <span class="name">井字棋-轮回</span>
+            <span class="icon">
+                <svg><use href="#circle-piece"></use></svg>
+                <svg><use href="#cross-piece"></use></svg>
+            </span>
+            <span class="name">井字棋</span>
         </a>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
         
-        <!-- 后续游戏添加位置 -->
+        <!-- 第2排 -->
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        
+        <!-- 第3排 -->
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        
+        <!-- 第4排 -->
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
+        <div class="game-card"></div>
     </div>
 
-    <div class="footer">
-        更多游戏陆续开发中...
-    </div>
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+            
+            const dateDisplay = document.getElementById('dateDisplay');
+            if (dateDisplay) {
+                dateDisplay.textContent = `${year}年${month}月${day}日 ${weekday}`;
+            }
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const timeDisplay = document.getElementById('timeDisplay');
+            if (timeDisplay) {
+                timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+            }
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
 </body>
 </html>

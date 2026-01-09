@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>井字棋 - 三子轮回</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: #fff;
+            padding: 20px;
+        }
+
+        h1 {
+            margin: 0 0 30px 0;
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: 6px;
+            text-align: center;
+            background: linear-gradient(90deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 50px;
+        }
+
+        /* 左侧规则 */
+        .rules-left {
+            width: 200px;
+            text-align: right;
+            padding: 20px 0;
+        }
+
+        .rules-left h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+
+        .rules-left ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-left li {
+            margin: 12px 0;
+            padding-right: 22px;
+            font-size: 0.95rem;
+            opacity: 0.8;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .rules-left li::after {
+            content: '◆';
+            position: absolute;
+            right: 0;
+            color: #667eea;
+            font-size: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* 右侧规则 */
+        .rules-right {
+            width: 200px;
+            text-align: left;
+            padding: 20px 0;
+        }
+
+        .rules-right h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 18px;
+            letter-spacing: 2px;
+            opacity: 0.9;
+        }
+
+        .rules-right ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .rules-right li {
+            margin: 12px 0;
+            padding-left: 22px;
+            font-size: 0.95rem;
+            opacity: 0.8;
+            position: relative;
+            line-height: 1.5;
+        }
+
+        .rules-right li::before {
+            content: '◆';
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-size: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .highlight {
+            color: #ffd700;
+            font-weight: 500;
+        }
+
+        /* 中心游戏区 */
+        .center-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-info {
+            width: 100%;
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status {
+            font-size: 1.5rem;
+            padding: 12px 35px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            text-align: center;
+        }
+
+        .status.black {
+            border: 2px solid rgba(80, 80, 80, 0.8);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .status.white {
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .info-row {
+            display: flex;
+            gap: 30px;
+            font-size: 0.95rem;
+            opacity: 0.85;
+        }
+
+        /* 放大棋盘 */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 120px);
+            grid-template-rows: repeat(3, 120px);
+            gap: 10px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .board::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .cell {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cell::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cell:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .cell:hover::before {
+            opacity: 1;
+        }
+
+        /* 棋子样式 - 黑棋 */
+        .cell.black {
+            background: radial-gradient(ellipse at 30% 30%, rgba(60, 60, 60, 0.9), rgba(20, 20, 20, 0.95));
+            box-shadow: 
+                inset 0 2px 10px rgba(255, 255, 255, 0.15),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.4),
+                0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .cell.black .piece {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            background: 
+                radial-gradient(circle at 35% 25%, rgba(100, 100, 100, 0.9) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, #2a2a2a 0%, #0a0a0a 50%, #000 100%);
+            box-shadow: 
+                inset 0 3px 8px rgba(255, 255, 255, 0.2),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .cell.black .piece::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            width: 20px;
+            height: 12px;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+        /* 棋子样式 - 白棋 */
+        .cell.white {
+            background: rgba(230, 230, 230, 0.5);
+            box-shadow: 
+                inset 0 0 0 3px rgba(200, 200, 200, 0.8),
+                0 8px 25px rgba(255, 255, 255, 0.15);
+        }
+
+        .cell.white .piece {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.3) 40%, rgba(180, 180, 180, 0.8) 100%);
+            box-shadow: 
+                inset 0 4px 10px rgba(255, 255, 255, 0.8),
+                inset 0 -4px 10px rgba(0, 0, 0, 0.15),
+                0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .cell.white .piece::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            width: 22px;
+            height: 14px;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.95) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: rotate(-25deg);
+        }
+
+        .cell.white .piece::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            width: 8px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+        @keyframes dropIn {
+            0% {
+                transform: translateY(-60px) scale(0.8);
+                opacity: 0;
+            }
+            60% {
+                transform: translateY(5px) scale(1.05);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .cell.disappear {
+            animation: fadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: brightness(1);
+            }
+            30% {
+                transform: scale(1.15);
+                filter: brightness(1.3);
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+                filter: brightness(0);
+            }
+        }
+
+        /* 获胜线高亮 */
+        .cell.win {
+            animation: winPulse 0.8s ease-in-out infinite;
+        }
+
+        @keyframes winPulse {
+            0%, 100% {
+                box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(255, 215, 0, 0.9), 0 0 70px rgba(255, 215, 0, 0.5);
+            }
+        }
+
+        /* 获胜弹窗 */
+        .winner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .winner-content {
+            text-align: center;
+            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .winner-content h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+            letter-spacing: 4px;
+        }
+
+        .winner-content h2.black {
+            color: #505050;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.6), 0 0 80px rgba(255, 255, 255, 0.4);
+        }
+
+        .winner-content h2.white {
+            color: #f0f0f0;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 0 80px rgba(255, 255, 255, 0.6);
+        }
+
+        .winner-content .trophy {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            animation: bounce 1s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .btn {
+            padding: 16px 50px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        /* 模式选择界面 */
+        .mode-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .mode-overlay.hidden {
+            display: none;
+        }
+
+        .mode-content {
+            text-align: center;
+            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .mode-content h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mode-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .mode-btn {
+            padding: 20px 45px;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 18px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            letter-spacing: 2px;
+            min-width: 200px;
+        }
+
+        .mode-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+            transform: translateY(-3px) scale(1.03);
+        }
+
+        .mode-btn .icon {
+            display: block;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn .desc {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* 切换模式按钮 */
+        .switch-mode-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .switch-mode-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        /* AI思考中 */
+        .cell.thinking {
+            cursor: wait;
+        }
+
+        .cell.thinking::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 纯手机模式样式 - 自适应所有屏幕 */
+        body {
+            min-height: 100vh;
+            height: auto;
+            padding: 15px;
+            padding-top: 55px;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: clamp(1rem, 4vw, 1.4rem);
+            letter-spacing: 2px;
+            margin: 0;
+            z-index: 100;
+            background: linear-gradient(90deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            white-space: nowrap;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* 隐藏两侧规则区 */
+        .rules-left, .rules-right {
+            display: none;
+        }
+
+        .center-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-info {
+            width: 100%;
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status {
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            padding: 8px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            white-space: nowrap;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+            padding: 6px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* 棋盘 - 自适应大小 */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: clamp(4px, 2vw, 10px);
+            padding: clamp(8px, 3vw, 20px);
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: clamp(10px, 3vw, 20px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            width: min(90vw, 400px);
+            height: min(90vw, 400px);
+            position: relative;
+        }
+
+        .board::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .cell {
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: clamp(6px, 2vw, 14px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            pointer-events: auto;
+            transition: all 0.2s ease;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cell:hover, .cell:active {
+            background: rgba(255, 255, 255, 0.15);
+            transform: scale(0.95);
+        }
+
+        .cell::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .cell:hover::before {
+            opacity: 1;
+        }
+
+        /* 棋子 */
+        .cell.black .piece,
+        .cell.white .piece {
+            width: 60%;
+            height: 60%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        .cell.black .piece {
+            background: 
+                radial-gradient(circle at 35% 25%, rgba(100, 100, 100, 0.9) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, #2a2a2a 0%, #0a0a0a 50%, #000 100%);
+            box-shadow: 
+                inset 0 3px 8px rgba(255, 255, 255, 0.2),
+                inset 0 -3px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .cell.black .piece::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 12px;
+            width: 20px;
+            height: 12px;
+            background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+        .cell.white .piece {
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.3) 40%, rgba(180, 180, 180, 0.8) 100%);
+            box-shadow: 
+                inset 0 4px 10px rgba(255, 255, 255, 0.8),
+                inset 0 -4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .cell.white .piece::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            width: 22px;
+            height: 14px;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.95) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: rotate(-25deg);
+        }
+
+        .cell.white .piece::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 25px;
+            width: 8px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            transform: rotate(-30deg);
+        }
+
+        /* 底部提示 */
+        .game-footer {
+            display: flex;
+            justify-content: center;
+            gap: clamp(8px, 2vw, 15px);
+            margin-top: 15px;
+            padding: 8px;
+            flex-wrap: wrap;
+        }
+
+        .game-footer span {
+            padding: 4px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            font-size: clamp(0.65rem, 2vw, 0.8rem);
+        }
+
+        /* 切换模式按钮 */
+        .switch-mode-btn {
+            position: fixed;
+            top: 12px;
+            right: 10px;
+            padding: 6px 14px;
+            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.3s ease;
+            z-index: 100;
+            white-space: nowrap;
+        }
+
+        .switch-mode-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+
+        /* 模式选择界面 */
+        .mode-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        .mode-content {
+            text-align: center;
+            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 300px;
+        }
+
+        .mode-content h2 {
+            font-size: clamp(1.4rem, 5vw, 2rem);
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 35px;
+            background: linear-gradient(90deg, #fff, #a0a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mode-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .mode-btn {
+            padding: 18px 35px;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            letter-spacing: 2px;
+            min-width: 200px;
+            max-width: 280px;
+            width: 100%;
+        }
+
+        .mode-btn:hover {
+            background: rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .mode-btn .icon {
+            display: block;
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: 10px;
+        }
+
+        .mode-btn .desc {
+            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+            opacity: 0.7;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* 获胜弹窗 */
+        .winner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.5s ease;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        .winner-content {
+            text-align: center;
+            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 320px;
+        }
+
+        .winner-content h2 {
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            margin-bottom: 15px;
+            font-weight: 300;
+            letter-spacing: 3px;
+        }
+
+        .winner-content h2.black {
+            color: #505050;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+        }
+
+        .winner-content h2.white {
+            color: #f0f0f0;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.9);
+        }
+
+        .winner-content .trophy {
+            font-size: clamp(3rem, 10vw, 5rem);
+            margin-bottom: 20px;
+            animation: bounce 1s ease infinite;
+        }
+
+        .btn {
+            padding: 14px 40px;
+            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        /* 横屏模式优化 */
+        @media (orientation: landscape) and (max-height: 500px) {
+            body {
+                flex-direction: row;
+                flex-wrap: wrap;
+                padding: 8px;
+                justify-content: center;
+                gap: 15px;
+                padding-top: 40px;
+            }
+
+            h1 {
+                position: absolute;
+                top: 5px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: clamp(0.8rem, 3vw, 1rem);
+            }
+
+            .game-container {
+                flex-direction: row;
+                max-width: none;
+                gap: 20px;
+            }
+
+            .center-area {
+                flex-direction: row;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .game-info {
+                margin-bottom: 0;
+                width: auto;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .status {
+                position: static;
+                font-size: clamp(0.8rem, 2.5vw, 1rem);
+                padding: 5px 15px;
+            }
+
+            .info-row {
+                position: static;
+                font-size: clamp(0.65rem, 2vw, 0.8rem);
+                padding: 4px 10px;
+                gap: 10px;
+            }
+
+            .board {
+                width: min(40vh, 300px);
+                height: min(40vh, 300px);
+                gap: clamp(3px, 1vw, 8px);
+                padding: clamp(6px, 2vw, 12px);
+            }
+
+            .cell {
+                width: 100%;
+                height: 100%;
+            }
+
+            .game-footer {
+                position: absolute;
+                bottom: 8px;
+                left: 50%;
+                transform: translateX(-50%);
+                margin-top: 0;
+                gap: 8px;
+            }
+
+            .switch-mode-btn {
+                top: 5px;
+                right: 8px;
+                padding: 5px 12px;
+                font-size: clamp(0.65rem, 2vw, 0.8rem);
+            }
+
+            .mode-buttons {
+                flex-direction: row;
+            }
+
+            .mode-btn {
+                min-width: 150px;
+                padding: 15px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>井字棋 · 轮回</h1>
+
+    <!-- 模式选择界面 -->
+    <div class="mode-overlay" id="modeOverlay">
+        <div class="mode-content">
+            <h2>选择对战模式</h2>
+            <div class="mode-buttons">
+                <button class="mode-btn" onclick="selectMode('pvp')">
+                    <span class="icon">👥</span>
+                    双人对战
+                    <div class="desc">与朋友面对面PK</div>
+                </button>
+                <button class="mode-btn" onclick="selectMode('pve')">
+                    <span class="icon">🤖</span>
+                    人机对战
+                    <div class="desc">挑战AI电脑玩家</div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 切换模式按钮 -->
+    <button class="switch-mode-btn" onclick="showModeSelect()">切换模式</button>
+
+    <div class="game-container">
+        <!-- 中心游戏区 -->
+        <div class="center-area">
+            <div class="game-info">
+                <div class="status black" id="status">当前: 黑方 ●</div>
+                <div class="info-row">
+                    <span id="piecesCount">黑方: 0/3 | 白方: 0/3</span>
+                    <span id="stepCounter">回合: 0</span>
+                </div>
+            </div>
+
+            <div class="board" id="board"></div>
+
+            <!-- 底部提示 -->
+            <div class="game-footer">
+                <span>黑先手</span>
+                <span>各3子</span>
+                <span>落4消最早</span>
+                <span>连3获胜</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        const statusEl = document.getElementById('status');
+        const piecesCountEl = document.getElementById('piecesCount');
+        const stepCounterEl = document.getElementById('stepCounter');
+        const modeOverlay = document.getElementById('modeOverlay');
+
+        let cells = Array(9).fill(null);
+        let blackPieces = [];
+        let whitePieces = [];
+        let currentPlayer = 'black';
+        let gameOver = false;
+        let stepCount = 0;
+        let winCombo = [];
+        let gameMode = 'pvp'; // 'pvp' 双人模式, 'pve' 人机模式
+        let isAiThinking = false;
+
+        // 选择游戏模式
+        function selectMode(mode) {
+            gameMode = mode;
+            modeOverlay.classList.add('hidden');
+            restart();
+        }
+
+        // 显示模式选择
+        function showModeSelect() {
+            modeOverlay.classList.remove('hidden');
+        }
+
+        // 初始化棋盘
+        function initBoard() {
+            board.innerHTML = '';
+            for (let i = 0; i < 9; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.dataset.index = i;
+
+                // 使用pointer事件更兼容移动端
+                cell.addEventListener('pointerdown', (e) => {
+                    e.preventDefault();
+                    handleClick(i);
+                });
+
+                board.appendChild(cell);
+            }
+        }
+
+        // 处理点击
+        function handleClick(index) {
+            if (gameOver || cells[index] || isAiThinking) return;
+
+            // 人机模式下，玩家只能执黑
+            if (gameMode === 'pve' && currentPlayer === 'white') return;
+
+            placePiece(index);
+
+            // 人机模式：AI自动下一步
+            if (!gameOver && gameMode === 'pve' && currentPlayer === 'white') {
+                isAiThinking = true;
+                board.style.opacity = '0.7';
+                setTimeout(() => {
+                    aiMove();
+                    board.style.opacity = '1';
+                    isAiThinking = false;
+                }, 600 + Math.random() * 400);
+            }
+        }
+
+        // 放置棋子
+        function placePiece(index) {
+            const playerPieces = currentPlayer === 'black' ? blackPieces : whitePieces;
+            stepCount++;
+
+            // 检查是否超过3子
+            if (playerPieces.length >= 3) {
+                // 移除最早下的棋子
+                const oldestIndex = playerPieces.shift();
+                cells[oldestIndex] = null;
+                const oldestCell = board.children[oldestIndex];
+                oldestCell.className = 'cell disappear';
+                setTimeout(() => {
+                    oldestCell.className = 'cell';
+                    oldestCell.innerHTML = '';
+                }, 500);
+            }
+
+            // 放置新棋子
+            cells[index] = currentPlayer;
+            playerPieces.push(index);
+
+            const cell = board.children[index];
+            cell.className = `cell ${currentPlayer}`;
+            cell.innerHTML = '<div class="piece"></div>';
+
+            // 检查获胜
+            const winResult = checkWin(currentPlayer);
+            if (winResult) {
+                gameOver = true;
+                winCombo = winResult;
+                highlightWinners();
+                setTimeout(() => showWinner(currentPlayer), 600);
+                return;
+            }
+
+            // 切换玩家
+            currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
+            updateStatus();
+        }
+
+        // AI移动逻辑
+        function aiMove() {
+            if (gameOver) return;
+
+            const availableMoves = cells.map((c, i) => c === null ? i : null).filter(i => i !== null);
+
+            if (availableMoves.length === 0) return;
+
+            let move;
+
+            // 策略：1. 尝试获胜 2. 阻止对手获胜 3. 中心优先 4. 随机
+            move = findWinningMove('white');
+            if (move === null) {
+                move = findWinningMove('black');
+            }
+            if (move === null) {
+                move = findStrategicMove();
+            }
+            if (move === null) {
+                move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+            }
+
+            placePiece(move);
+        }
+
+        // 找到能获胜的位置
+        function findWinningMove(player) {
+            const wins = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            for (const combo of wins) {
+                const values = combo.map(i => cells[i]);
+                const playerCount = values.filter(v => v === player).length;
+                const emptyCount = values.filter(v => v === null).length;
+
+                if (playerCount === 2 && emptyCount === 1) {
+                    const emptyIndex = combo.find(i => cells[i] === null);
+                    return emptyIndex;
+                }
+            }
+            return null;
+        }
+
+        // 策略性移动：优先中心、角落
+        function findStrategicMove() {
+            const center = 4;
+            const corners = [0, 2, 6, 8];
+            const edges = [1, 3, 5, 7];
+            const availableMoves = cells.map((c, i) => c === null ? i : null).filter(i => i !== null);
+
+            // 优先中心
+            if (cells[center] === null) return center;
+
+            // 优先角落
+            const availableCorners = corners.filter(i => availableMoves.includes(i));
+            if (availableCorners.length > 0) {
+                return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+            }
+
+            // 边缘
+            const availableEdges = edges.filter(i => availableMoves.includes(i));
+            if (availableEdges.length > 0) {
+                return availableEdges[Math.floor(Math.random() * availableEdges.length)];
+            }
+
+            return null;
+        }
+
+        // 检查获胜
+        function checkWin(player) {
+            const wins = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // 横
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // 竖
+                [0, 4, 8], [2, 4, 6]             // 斜
+            ];
+
+            for (const combo of wins) {
+                if (combo.every(index => cells[index] === player)) {
+                    return combo;
+                }
+            }
+            return null;
+        }
+
+        // 高亮获胜棋子
+        function highlightWinners() {
+            winCombo.forEach(index => {
+                board.children[index].classList.add('win');
+            });
+        }
+
+        // 更新状态显示
+        function updateStatus() {
+            let playerText;
+            if (gameMode === 'pve') {
+                playerText = currentPlayer === 'black' ? '玩家 (你) ●' : 'AI 电脑 ○';
+            } else {
+                playerText = currentPlayer === 'black' ? '黑方 ●' : '白方 ○';
+            }
+            statusEl.textContent = `当前: ${playerText}`;
+            statusEl.className = `status ${currentPlayer}`;
+            piecesCountEl.textContent = `黑方: ${blackPieces.length}/3 | 白方: ${whitePieces.length}/3`;
+            stepCounterEl.textContent = `回合: ${stepCount}`;
+        }
+
+        // 显示获胜者
+        function showWinner(winner) {
+            const overlay = document.createElement('div');
+            overlay.className = 'winner-overlay';
+
+            const isBlack = winner === 'black';
+            const winnerName = gameMode === 'pve' && !isBlack ? 'AI 电脑' : (isBlack ? '黑方' : '白方');
+
+            overlay.innerHTML = `
+                <div class="winner-content">
+                    <div class="trophy">🏆</div>
+                    <h2 class="${winner}">${winnerName} 获胜!</h2>
+                    <button class="btn" onclick="restart()">再来一局</button>
+                    <button class="btn" style="margin-top: 15px; background: rgba(255,255,255,0.1);" onclick="showModeSelectFromWin()">切换模式</button>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+        }
+
+        // 从获胜弹窗切换模式
+        function showModeSelectFromWin() {
+            document.querySelector('.winner-overlay')?.remove();
+            modeOverlay.classList.remove('hidden');
+        }
+
+        // 重新开始
+        function restart() {
+            cells = Array(9).fill(null);
+            blackPieces = [];
+            whitePieces = [];
+            currentPlayer = 'black';
+            gameOver = false;
+            stepCount = 0;
+            winCombo = [];
+            isAiThinking = false;
+
+            document.querySelector('.winner-overlay')?.remove();
+            initBoard();
+            updateStatus();
+        }
+
+        // 启动游戏时显示模式选择
+        // initBoard();
+        // updateStatus();
+    </script>
+</body>
+</html>

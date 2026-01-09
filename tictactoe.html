@@ -18,9 +18,10 @@
             align-items: center;
             justify-content: center;
             background: 
-                radial-gradient(ellipse at 20% 20%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
-                linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+                radial-gradient(ellipse at 15% 15%, rgba(0, 245, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 85% 85%, rgba(255, 107, 157, 0.08) 0%, transparent 40%),
+                radial-gradient(ellipse at 50% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 60%),
+                linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             color: #fff;
             padding: 20px;
@@ -28,14 +29,15 @@
 
         h1 {
             margin: 0 0 30px 0;
-            font-size: 3rem;
+            font-size: 2.5rem;
             font-weight: 300;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             text-align: center;
-            background: linear-gradient(90deg, #fff, #a0a0ff);
+            background: linear-gradient(135deg, #00f5ff 0%, #667eea 50%, #ff6b9d 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
         }
 
         .game-container {
@@ -145,23 +147,34 @@
         }
 
         .status {
-            font-size: 1.5rem;
-            padding: 12px 35px;
+            font-size: 1.3rem;
+            padding: 12px 30px;
             border-radius: 50px;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             transition: all 0.4s ease;
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .status.black {
-            border: 2px solid rgba(80, 80, 80, 0.8);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.2);
+            border-color: rgba(0, 245, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.1), inset 0 0 20px rgba(0, 245, 255, 0.05);
         }
 
         .status.white {
-            border: 2px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.15), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 107, 157, 0.3);
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.1), inset 0 0 20px rgba(255, 107, 157, 0.05);
+        }
+
+        .circle-text {
+            color: #00f5ff;
+            text-shadow: 0 0 8px rgba(0, 245, 255, 0.6);
+        }
+
+        .cross-text {
+            color: #ff6b9d;
+            text-shadow: 0 0 8px rgba(255, 107, 157, 0.6);
         }
 
         .info-row {
@@ -178,12 +191,13 @@
             grid-template-rows: repeat(3, 120px);
             gap: 10px;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 20px;
             backdrop-filter: blur(15px);
             box-shadow: 
-                0 25px 60px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                0 25px 60px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(0, 245, 255, 0.05),
+                0 0 40px rgba(255, 107, 157, 0.05);
             position: relative;
         }
 
@@ -193,7 +207,7 @@
             inset: 0;
             border-radius: 20px;
             padding: 2px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
+            background: linear-gradient(135deg, rgba(0, 245, 255, 0.3), rgba(255, 107, 157, 0.3));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
@@ -204,8 +218,8 @@
         .cell {
             width: 120px;
             height: 120px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -215,8 +229,8 @@
             user-select: none;
             -webkit-user-select: none;
             pointer-events: auto;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             position: relative;
             overflow: hidden;
         }
@@ -225,100 +239,65 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent 70%);
+            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 70%);
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .cell:hover {
-            background: rgba(255, 255, 255, 0.1);
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        body[data-current="black"] .cell:hover {
+            background: rgba(0, 245, 255, 0.08);
+            box-shadow: 0 10px 40px rgba(0, 245, 255, 0.3);
+            border-color: rgba(0, 245, 255, 0.5);
+        }
+
+        body[data-current="white"] .cell:hover {
+            background: rgba(255, 107, 157, 0.08);
+            box-shadow: 0 10px 40px rgba(255, 107, 157, 0.3);
+            border-color: rgba(255, 107, 157, 0.5);
         }
 
         .cell:hover::before {
             opacity: 1;
         }
 
-        /* 棋子样式 - 黑棋 */
+        /* 棋子样式 - ○ */
         .cell.black {
-            background: radial-gradient(ellipse at 30% 30%, rgba(60, 60, 60, 0.9), rgba(20, 20, 20, 0.95));
-            box-shadow: 
-                inset 0 2px 10px rgba(255, 255, 255, 0.15),
-                inset 0 -2px 10px rgba(0, 0, 0, 0.4),
-                0 8px 25px rgba(0, 0, 0, 0.5);
+            background: transparent;
+            box-shadow: none;
         }
 
         .cell.black .piece {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
+            width: 70%;
+            height: 70%;
             animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            background: 
-                radial-gradient(circle at 35% 25%, rgba(100, 100, 100, 0.9) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, #2a2a2a 0%, #0a0a0a 50%, #000 100%);
-            box-shadow: 
-                inset 0 3px 8px rgba(255, 255, 255, 0.2),
-                inset 0 -3px 8px rgba(0, 0, 0, 0.5);
+            filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.6));
         }
 
-        .cell.black .piece::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 12px;
-            width: 20px;
-            height: 12px;
-            background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: rotate(-30deg);
+        .cell.black .piece svg {
+            width: 100%;
+            height: 100%;
         }
 
-        /* 棋子样式 - 白棋 */
+        /* 棋子样式 - × */
         .cell.white {
-            background: rgba(230, 230, 230, 0.5);
-            box-shadow: 
-                inset 0 0 0 3px rgba(200, 200, 200, 0.8),
-                0 8px 25px rgba(255, 255, 255, 0.15);
+            background: transparent;
+            box-shadow: none;
         }
 
         .cell.white .piece {
-            width: 75px;
-            height: 75px;
-            border-radius: 50%;
+            width: 70%;
+            height: 70%;
             animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.3) 40%, rgba(180, 180, 180, 0.8) 100%);
-            box-shadow: 
-                inset 0 4px 10px rgba(255, 255, 255, 0.8),
-                inset 0 -4px 10px rgba(0, 0, 0, 0.15),
-                0 6px 20px rgba(0, 0, 0, 0.2);
+            filter: drop-shadow(0 0 8px rgba(255, 107, 157, 0.6));
         }
 
-        .cell.white .piece::before {
-            content: '';
-            position: absolute;
-            top: 12px;
-            left: 15px;
-            width: 22px;
-            height: 14px;
-            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.95) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: rotate(-25deg);
-        }
-
-        .cell.white .piece::after {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 25px;
-            width: 8px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            transform: rotate(-30deg);
+        .cell.white .piece svg {
+            width: 100%;
+            height: 100%;
         }
 
         @keyframes dropIn {
@@ -336,23 +315,21 @@
         }
 
         .cell.disappear {
-            animation: fadeOut 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation: none;
+        }
+
+        .cell.disappear .piece {
+            animation: fadeOut 0.5s ease forwards;
         }
 
         @keyframes fadeOut {
             0% {
                 transform: scale(1);
                 opacity: 1;
-                filter: brightness(1);
-            }
-            30% {
-                transform: scale(1.15);
-                filter: brightness(1.3);
             }
             100% {
-                transform: scale(0);
+                transform: scale(0.3);
                 opacity: 0;
-                filter: brightness(0);
             }
         }
 
@@ -539,18 +516,19 @@
             right: 15px;
             padding: 8px 16px;
             font-size: 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(0, 245, 255, 0.3);
             border-radius: 20px;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
+            background: rgba(0, 245, 255, 0.1);
+            color: #00f5ff;
             transition: all 0.3s ease;
             z-index: 100;
         }
 
         .switch-mode-btn:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
+            background: rgba(0, 245, 255, 0.2);
+            border-color: #00f5ff;
+            box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
         }
 
         /* AI思考中 */
@@ -700,8 +678,21 @@
         }
 
         .cell:hover, .cell:active {
-            background: rgba(255, 255, 255, 0.15);
             transform: scale(0.95);
+        }
+
+        body[data-current="black"] .cell:hover, 
+        body[data-current="black"] .cell:active {
+            background: rgba(0, 245, 255, 0.12);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+            border-color: rgba(0, 245, 255, 0.4);
+        }
+
+        body[data-current="white"] .cell:hover, 
+        body[data-current="white"] .cell:active {
+            background: rgba(255, 107, 157, 0.12);
+            box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+            border-color: rgba(255, 107, 157, 0.4);
         }
 
         .cell::before {
@@ -720,65 +711,23 @@
         /* 棋子 */
         .cell.black .piece,
         .cell.white .piece {
-            width: 60%;
-            height: 60%;
-            aspect-ratio: 1;
-            border-radius: 50%;
+            width: 70%;
+            height: 70%;
             animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
         }
 
         .cell.black .piece {
-            background: 
-                radial-gradient(circle at 35% 25%, rgba(100, 100, 100, 0.9) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, #2a2a2a 0%, #0a0a0a 50%, #000 100%);
-            box-shadow: 
-                inset 0 3px 8px rgba(255, 255, 255, 0.2),
-                inset 0 -3px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        .cell.black .piece::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 12px;
-            width: 20px;
-            height: 12px;
-            background: radial-gradient(ellipse, rgba(255,255,255,0.4) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: rotate(-30deg);
+            filter: drop-shadow(0 0 6px rgba(0, 245, 255, 0.6));
         }
 
         .cell.white .piece {
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.3) 40%, rgba(180, 180, 180, 0.8) 100%);
-            box-shadow: 
-                inset 0 4px 10px rgba(255, 255, 255, 0.8),
-                inset 0 -4px 10px rgba(0, 0, 0, 0.15);
+            filter: drop-shadow(0 0 6px rgba(255, 107, 157, 0.6));
         }
 
-        .cell.white .piece::before {
-            content: '';
-            position: absolute;
-            top: 12px;
-            left: 15px;
-            width: 22px;
-            height: 14px;
-            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.95) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: rotate(-25deg);
-        }
-
-        .cell.white .piece::after {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 25px;
-            width: 8px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 50%;
-            transform: rotate(-30deg);
+        .cell.black .piece svg,
+        .cell.white .piece svg {
+            width: 100%;
+            height: 100%;
         }
 
         /* 底部提示 */
@@ -794,6 +743,7 @@
         .game-footer span {
             padding: 4px 12px;
             background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             font-size: clamp(0.65rem, 2vw, 0.8rem);
         }
@@ -849,7 +799,7 @@
             font-weight: 300;
             letter-spacing: 3px;
             margin-bottom: 35px;
-            background: linear-gradient(90deg, #fff, #a0a0ff);
+            background: linear-gradient(135deg, #00f5ff 0%, #ff6b9d 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -865,7 +815,7 @@
         .mode-btn {
             padding: 18px 35px;
             font-size: clamp(1rem, 3.5vw, 1.2rem);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.15);
             border-radius: 16px;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.05);
@@ -879,9 +829,10 @@
         }
 
         .mode-btn:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
+            background: rgba(0, 245, 255, 0.15);
+            border-color: #00f5ff;
             transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(0, 245, 255, 0.2);
         }
 
         .mode-btn .icon {
@@ -914,14 +865,14 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(10, 10, 26, 0.9);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             animation: fadeIn 0.5s ease;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             padding: 20px;
         }
 
@@ -939,13 +890,13 @@
         }
 
         .winner-content h2.black {
-            color: #505050;
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+            color: #00f5ff;
+            text-shadow: 0 0 30px rgba(0, 245, 255, 0.6);
         }
 
         .winner-content h2.white {
-            color: #f0f0f0;
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.9);
+            color: #ff6b9d;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.6);
         }
 
         .winner-content .trophy {
@@ -960,18 +911,18 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
+            background: linear-gradient(135deg, #00f5ff 0%, #667eea 100%);
+            color: #0a0a1a;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0, 245, 255, 0.3);
+            font-weight: 600;
             letter-spacing: 2px;
             margin-top: 10px;
         }
 
         .btn:hover {
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.5);
         }
 
         /* 横屏模式优化 */
@@ -1064,7 +1015,20 @@
         }
     </style>
 </head>
-<body>
+<body data-current="black">
+    <!-- SVG棋子定义 -->
+    <svg style="display: none;">
+        <defs>
+            <!-- 圆形棋子○ - 青色 -->
+            <symbol id="circle-piece" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="#00f5ff" stroke-width="12" />
+            </symbol>
+            <!-- 叉号棋子× - 粉色 -->
+            <symbol id="cross-piece" viewBox="0 0 100 100">
+                <path d="M8 8 L92 92 M92 8 L8 92" stroke="#ff6b9d" stroke-width="12" stroke-linecap="round" />
+            </symbol>
+        </defs>
+    </svg>
     <h1>井字棋 · 轮回</h1>
 
     <!-- 模式选择界面 -->
@@ -1098,7 +1062,7 @@
         <!-- 中心游戏区 -->
         <div class="center-area">
             <div class="game-info">
-                <div class="status black" id="status">当前: 黑方 ●</div>
+                <div class="status black" id="status">当前: <span class="circle-text">○</span> 圆</div>
                 <div class="info-row">
                     <span id="piecesCount">黑方: 0/3 | 白方: 0/3</span>
                     <span id="stepCounter">回合: 0</span>
@@ -1148,7 +1112,7 @@
 
         // 返回首页
         function goHome() {
-            window.location.href = '../';
+            window.location.href = 'https://blackc009.github.io/mini_games/';
         }
 
         // 初始化棋盘
@@ -1214,7 +1178,8 @@
 
             const cell = board.children[index];
             cell.className = `cell ${currentPlayer}`;
-            cell.innerHTML = '<div class="piece"></div>';
+            const symbolId = currentPlayer === 'black' ? '#circle-piece' : '#cross-piece';
+            cell.innerHTML = `<div class="piece"><svg><use href="${symbolId}"></use></svg></div>`;
 
             // 检查获胜
             const winResult = checkWin(currentPlayer);
@@ -1329,13 +1294,18 @@
         function updateStatus() {
             let playerText;
             if (gameMode === 'pve') {
-                playerText = currentPlayer === 'black' ? '玩家 (你) ●' : 'AI 电脑 ○';
+                playerText = currentPlayer === 'black' ? 
+                    '<span class="circle-text">○</span> 玩家 (你)' : 
+                    '<span class="cross-text">×</span> AI 电脑';
             } else {
-                playerText = currentPlayer === 'black' ? '黑方 ●' : '白方 ○';
+                playerText = currentPlayer === 'black' ? 
+                    '<span class="circle-text">○</span> 圆' : 
+                    '<span class="cross-text">×</span> 叉';
             }
-            statusEl.textContent = `当前: ${playerText}`;
+            statusEl.innerHTML = `当前: ${playerText}`;
             statusEl.className = `status ${currentPlayer}`;
-            piecesCountEl.textContent = `黑方: ${blackPieces.length}/3 | 白方: ${whitePieces.length}/3`;
+            document.body.dataset.current = currentPlayer;
+            piecesCountEl.textContent = `圆: ${blackPieces.length}/3 | 叉: ${whitePieces.length}/3`;
             stepCounterEl.textContent = `回合: ${stepCount}`;
         }
 
@@ -1345,12 +1315,15 @@
             overlay.className = 'winner-overlay';
 
             const isBlack = winner === 'black';
-            const winnerName = gameMode === 'pve' && !isBlack ? 'AI 电脑' : (isBlack ? '黑方' : '白方');
+            const winnerSymbol = isBlack ? 
+                '<span class="circle-text">○</span>' : 
+                '<span class="cross-text">×</span>';
+            const winnerName = gameMode === 'pve' && !isBlack ? 'AI 电脑' : (isBlack ? '圆' : '叉');
 
             overlay.innerHTML = `
                 <div class="winner-content">
                     <div class="trophy">🏆</div>
-                    <h2 class="${winner}">${winnerName} 获胜!</h2>
+                    <h2 class="${winner}">${winnerSymbol} ${winnerName} 获胜!</h2>
                     <button class="btn" onclick="restart()">再来一局</button>
                     <button class="btn" style="margin-top: 15px; background: rgba(255,255,255,0.1);" onclick="showModeSelectFromWin()">切换模式</button>
                 </div>

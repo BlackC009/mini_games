@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>井字棋 - 轮回</title>
+    <title>井字棋-轮回</title>
     <style>
         * {
             margin: 0;
@@ -897,6 +897,16 @@
             letter-spacing: 1px;
         }
 
+        .home-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
         /* 获胜弹窗 */
         .winner-overlay {
             position: fixed;
@@ -1047,7 +1057,7 @@
                 flex-direction: row;
             }
 
-            .mode-btn {
+            .mode-btn, .home-btn {
                 min-width: 150px;
                 padding: 15px 25px;
             }
@@ -1071,6 +1081,11 @@
                     <span class="icon">🤖</span>
                     人机对战
                     <div class="desc">挑战AI电脑玩家</div>
+                </button>
+                <button class="mode-btn home-btn" onclick="goHome()">
+                    <span class="icon">🏠</span>
+                    返回首页
+                    <div class="desc">选择其他游戏</div>
                 </button>
             </div>
         </div>
@@ -1129,6 +1144,11 @@
         // 显示模式选择
         function showModeSelect() {
             modeOverlay.classList.remove('hidden');
+        }
+
+        // 返回首页
+        function goHome() {
+            window.location.href = '../';
         }
 
         // 初始化棋盘

@@ -129,13 +129,20 @@
             height: 100%;
         }
 
+        .game-card .icon span,
+        .game-card .icon font {
+            font-size: 28px;
+            font-size: -webkit-calc(20px + 1vw);
+            font-size: calc(20px + 1vw);
+        }
+
         .game-card .name {
             position: absolute;
             bottom: 10%;
             left: 50%;
             -webkit-transform: translateX(-50%);
             transform: translateX(-50%);
-            font-size: 12px;
+            font-size: 16px;
             font-weight: 400;
             letter-spacing: 1px;
             white-space: nowrap;
@@ -175,27 +182,18 @@
             </span>
             <span class="name">井字棋</span>
         </a>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        
-        <!-- 第2排 -->
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        
-        <!-- 第3排 -->
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        
-        <!-- 第4排 -->
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
-        <div class="game-card"></div>
+        <a href="memory.html" class="game-card">
+            <span class="icon"><font style="font-size:24px">&#127827;</font></span>
+            <span class="name">记忆翻牌</span>
+        </a>
+        <a href="puzzle.html" class="game-card">
+            <span class="icon"><font style="font-size:18px; line-height:1.2;">1 2<br>3 4</font></span>
+            <span class="name">数字消除</span>
+        </a>
+        <a href="survival.html" class="game-card">
+            <span class="icon"><font style="font-size:20px">🏰⚔️</font></span>
+            <span class="name">生存建造</span>
+        </a>
     </div>
 
     <div class="footer"></div>

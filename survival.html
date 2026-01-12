@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>堡垒防御</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Microsoft YaHei', sans-serif;
+            color: #fff;
+            padding: 15px;
+            padding-top: 55px;
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        h1 {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin: 0;
+            z-index: 100;
+            background: linear-gradient(90deg, #00f5ff, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            font-size: 13px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-box span {
+            color: #00f5ff;
+            font-weight: bold;
+        }
+
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: calc(100vh - 320px);
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #00f5ff 0%, #667eea 100%);
+            color: #fff;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0, 245, 255, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .wave-info {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #ff6b9d;
+        }
+
+        .home-btn {
+            position: fixed;
+            top: 10px;
+            right: 15px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .overlay.hidden {
+            display: none;
+        }
+
+        .overlay h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00f5ff, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .upgrade-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 80%;
+            max-width: 280px;
+        }
+
+        .upgrade-option {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .upgrade-option:hover {
+            border-color: #00f5ff;
+            background: rgba(0, 245, 255, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upgrade-option .icon {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-option .name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .upgrade-option .desc {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .game-over-overlay h2 {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 15px;
+        }
+
+        .game-over-stats {
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .game-over-stats span {
+            color: #00f5ff;
+            font-weight: bold;
+        }
+
+        .stats-display {
+            font-size: 12px;
+            margin-bottom: 15px;
+            color: #aaa;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .stats-display span {
+            color: #00f5ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>堡垒防御</h1>
+    <button class="home-btn" onclick="goHome()">返回首页</button>
+
+    <div class="game-info">
+        <div class="info-box">生命: <span id="health">100</span></div>
+        <div class="info-box">分数: <span id="score">0</span></div>
+        <div class="info-box">波次: <span id="wave">1</span></div>
+    </div>
+
+    <div class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- 升级选择界面 -->
+        <div class="overlay hidden" id="upgradeOverlay">
+            <h2>选择升级</h2>
+            <div class="stats-display">
+                攻击力: <span id="atkStat">25</span> | 
+                攻速: <span id="aspdStat">1.0</span>/s | 
+                范围: <span id="rangeStat">100</span><br>
+                生命: <span id="hpStat">100</span> | 
+                攻击: <span id="pierceStat">1</span>
+            </div>
+            <div class="upgrade-options" id="upgradeOptions"></div>
+        </div>
+
+        <!-- 游戏结束界面 -->
+        <div class="overlay hidden game-over-overlay" id="gameOverOverlay">
+            <h2>游戏结束</h2>
+            <div class="game-over-stats">
+                存活时间: <span id="finalTime">0</span>秒<br>
+                最高波次: <span id="finalWave">1</span><br>
+                最终分数: <span id="finalScore">0</span>
+            </div>
+            <button class="btn" onclick="restartGame()">重新开始</button>
+        </div>
+    </div>
+
+    <div class="wave-info" id="waveInfo">消灭所有敌人进入下一波...</div>
+
+    <div class="controls">
+        <button class="btn" id="startBtn" onclick="startGame()">开始游戏</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 游戏状态
+        let gameRunning = false;
+        let gameStarted = false;
+        let baseX, baseY;
+        let enemies = [];
+        let particles = [];
+        let projectiles = [];
+        
+        let health = 100;
+        let maxHealth = 100;
+        let score = 0;
+        let wave = 1;
+        let enemiesSpawned = 0;
+        let enemiesPerWave = 1;
+        let startTime = 0;
+        let waveComplete = false;
+        
+        // 堡垒属性
+        let attackPower = 25;
+        let attackSpeed = 1000; // 毫秒
+        let attackRange = 250;
+        let pierce = 1; // 同时攻击
+        let uiTimer = null; // UI刷新定时器
+        let lastAttackTime = 0;
+        
+        // 升级选项池
+        const allUpgrades = [
+            { id: 'power', name: '攻击力+15', desc: '造成更多伤害', icon: '⚔️', apply: () => attackPower += 15 },
+            { id: 'speed', name: '攻速+20%', desc: '攻击更快', icon: '⚡', apply: () => attackSpeed = Math.max(150, attackSpeed * 0.8) },
+            { id: 'range', name: '攻击范围+20', desc: '扩大攻击范围', icon: '🎯', apply: () => attackRange += 20 },
+            { id: 'pierce', name: '攻击+1', desc: '同时攻击多个敌人', icon: '🏹', apply: () => pierce += 1 },
+            { id: 'heal', name: '恢复生命+50', desc: '回复堡垒生命', icon: '❤️', apply: () => health = Math.min(maxHealth, health + 50) },
+            { id: 'maxhp', name: '最大生命+50', desc: '提升血量上限', icon: '🛡️', apply: () => { maxHealth += 50; health += 50; } },
+            { id: 'regen', name: '持续回血', desc: '每秒恢复1%生命', icon: '💚', apply: () => regenRate += 0.01 },
+        ];
+        
+        let regenRate = 0;
+
+        // 堡垒类
+        class Base {
+            constructor() {
+                this.x = canvas.width / 2;
+                this.y = canvas.height - 80;
+                this.size = 35;
+            }
+            
+            update() {
+                // 自动攻击
+                this.autoAttack();
+                
+                // 回血
+                if (regenRate > 0 && health < maxHealth) {
+                    health = Math.min(maxHealth, health + regenRate);
+                }
+            }
+            
+            autoAttack() {
+                const now = Date.now();
+                if (now - lastAttackTime < attackSpeed) return;
+                
+                // 找范围内的敌人
+                let targets = [];
+                for (let e of enemies) {
+                    const dist = Math.hypot(e.x - this.x, e.y - this.y);
+                    if (dist < attackRange) {
+                        targets.push(e);
+                    }
+                }
+                
+                if (targets.length > 0) {
+                    lastAttackTime = now;
+                    
+                    // 根据同时攻击数选择目标
+                    let hitCount = 0;
+                    for (let e of targets) {
+                        if (hitCount >= pierce) break;
+                        
+                        e.health -= attackPower;
+                        createParticle(e.x, e.y, '#00f5ff', 4);
+                        hitCount++;
+                        
+                        // 发射特效
+                        projectiles.push({
+                            x: this.x,
+                            y: this.y,
+                            targetX: e.x,
+                            targetY: e.y,
+                            progress: 0
+                        });
+                        
+                        if (e.health <= 0) {
+                            score += e.isElite ? 50 * wave : 10 * wave;
+                        }
+                    }
+                    
+                    updateUI();
+                }
+            }
+            
+            draw() {
+                // 外圈（攻击范围）
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, attackRange, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(0, 245, 255, 0.1)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                
+                // 堡垒主体
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#00f5ff';
+                ctx.fill();
+                ctx.strokeStyle = '#667eea';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // 堡垒图标
+                ctx.fillStyle = '#1a1a2e';
+                ctx.font = 'bold 20px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🏰', this.x, this.y);
+                
+                // 血条（画在堡垒上方）
+                const hpPercent = health / maxHealth;
+                ctx.fillStyle = '#333';
+                ctx.fillRect(this.x - 30, this.y - this.size - 16, 60, 6);
+                
+                let hpColor = hpPercent > 0.5 ? '#00ff00' : hpPercent > 0.25 ? '#f39c12' : '#ff6b6b';
+                ctx.fillStyle = hpColor;
+                ctx.fillRect(this.x - 30, this.y - this.size - 16, 60 * hpPercent, 6);
+            }
+        }
+
+        let base = null;
+
+        // 敌人类
+        class Enemy {
+            constructor(isElite = false) {
+                // 从顶部生成
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                
+                this.isElite = isElite;
+                
+                if (isElite) {
+                    this.size = 25;
+                    this.speed = 0.5 + wave * 0.03;
+                    this.health = (20 + wave * 10) * 3;
+                    this.maxHealth = this.health;
+                    this.damage = (5 + wave * 0.5) * 2;
+                    this.color = '#ff0000';
+                } else {
+                    this.size = 15;
+                    this.speed = 0.8 + wave * 0.05;
+                    this.health = 20 + wave * 10;
+                    this.maxHealth = this.health;
+                    this.damage = 5 + wave * 0.5;
+                    this.color = '#ff6b6b';
+                }
+            }
+            
+            update() {
+                const dx = base.x - this.x;
+                const dy = base.y - this.y;
+                const dist = Math.hypot(dx, dy);
+                
+                if (dist > base.size + this.size) {
+                    this.x += (dx / dist) * this.speed;
+                    this.y += (dy / dist) * this.speed;
+                } else {
+                    // 攻击堡垒
+                    health -= this.damage * 0.02;
+                    createParticle(base.x, base.y, '#ff0000', 2);
+                    
+                    if (health <= 0) {
+                        gameOver();
+                    }
+                }
+            }
+            
+            draw() {
+                // 精英敌人光圈
+                if (this.isElite) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size + 5, 0, Math.PI * 2);
+                    ctx.strokeStyle = '#ffd700';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+                
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                
+                // 血条
+                const hpPercent = Math.max(0, this.health / this.maxHealth);
+                ctx.fillStyle = '#333';
+                const barWidth = this.isElite ? 36 : 24;
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth, 4);
+                ctx.fillStyle = this.isElite ? '#ffd700' : '#ff6b6b';
+                ctx.fillRect(this.x - barWidth/2, this.y - this.size - 10, barWidth * hpPercent, 4);
+            }
+        }
+
+        // 粒子类
+        function createParticle(x, y, color, size) {
+            for (let i = 0; i < 5; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: (Math.random() - 0.5) * 3,
+                    life: 15,
+                    color: color,
+                    size: size
+                });
+            }
+        }
+
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * (p.life / 15), 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+                
+                if (p.life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        }
+
+        // 投射物
+        function updateProjectiles() {
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const p = projectiles[i];
+                p.progress += 0.15;
+                
+                const x = p.x + (p.targetX - p.x) * p.progress;
+                const y = p.y + (p.targetY - p.y) * p.progress;
+                
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#00f5ff';
+                ctx.fill();
+                
+                if (p.progress >= 1) {
+                    projectiles.splice(i, 1);
+                }
+            }
+        }
+
+        function spawnEnemy() {
+            if (enemiesSpawned < enemiesPerWave) {
+                // 每10波生成一个精英敌人
+                const isElite = (wave % 10 === 0) && (enemiesSpawned === 0);
+                enemies.push(new Enemy(isElite));
+                enemiesSpawned++;
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('health').textContent = Math.max(0, Math.floor(health)) + '/' + maxHealth;
+            document.getElementById('score').textContent = score;
+            document.getElementById('wave').textContent = wave;
+        }
+
+        function showUpgradeScreen() {
+            waveComplete = true;
+            gameRunning = false;
+            if (uiTimer) clearInterval(uiTimer);
+            
+            // 随机选择3个升级
+            const shuffled = [...allUpgrades].sort(() => Math.random() - 0.5);
+            const options = shuffled.slice(0, 3);
+            
+            const container = document.getElementById('upgradeOptions');
+            container.innerHTML = '';
+            
+            options.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'upgrade-option';
+                div.innerHTML = `
+                    <div class="icon">${opt.icon}</div>
+                    <div class="name">${opt.name}</div>
+                    <div class="desc">${opt.desc}</div>
+                `;
+                div.onclick = () => selectUpgrade(opt);
+                container.appendChild(div);
+            });
+            
+            // 更新属性显示
+            document.getElementById('atkStat').textContent = Math.floor(attackPower);
+            document.getElementById('aspdStat').textContent = (1000 / attackSpeed).toFixed(1);
+            document.getElementById('rangeStat').textContent = Math.floor(attackRange);
+            document.getElementById('hpStat').textContent = Math.floor(maxHealth);
+            document.getElementById('pierceStat').textContent = pierce;
+            
+            document.getElementById('upgradeOverlay').classList.remove('hidden');
+        }
+
+        function selectUpgrade(opt) {
+            opt.apply();
+            document.getElementById('upgradeOverlay').classList.add('hidden');
+            
+            // 开始下一波
+            wave++;
+            enemiesPerWave = wave;
+            enemiesSpawned = 0;
+            
+            waveComplete = false;
+            gameRunning = true;
+            updateUI();
+            document.getElementById('waveInfo').textContent = `第 ${wave} 波敌人来袭！`;
+            gameLoop();
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            if (uiTimer) clearInterval(uiTimer);
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            
+            document.getElementById('finalTime').textContent = elapsed;
+            document.getElementById('finalWave').textContent = wave;
+            document.getElementById('finalScore').textContent = score;
+            document.getElementById('gameOverOverlay').classList.remove('hidden');
+        }
+
+        function restartGame() {
+            document.getElementById('gameOverOverlay').classList.add('hidden');
+            initGame();
+        }
+
+        function goHome() {
+            window.location.href = 'index.html';
+        }
+
+        function startGame() {
+            document.getElementById('startBtn').style.display = 'none';
+            gameStarted = true;
+            initGame();
+        }
+
+        function initGame() {
+            resizeCanvas();
+            
+            base = new Base();
+            enemies = [];
+            particles = [];
+            projectiles = [];
+            
+            health = 100;
+            maxHealth = 100;
+            score = 0;
+            wave = 1;
+            enemiesSpawned = 0;
+            enemiesPerWave = 1;
+            startTime = Date.now();
+            waveComplete = false;
+            
+            attackPower = 25;
+            attackSpeed = 1000;
+            attackRange = 250;
+            pierce = 1;
+            regenRate = 0;
+            
+            updateUI();
+            document.getElementById('waveInfo').textContent = '消灭所有敌人进入下一波...';
+            
+            // 启动UI刷新定时器
+            if (uiTimer) clearInterval(uiTimer);
+            uiTimer = setInterval(updateUI, 1000);
+            
+            gameRunning = true;
+            gameLoop();
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // 清空画布
+            ctx.fillStyle = 'rgba(26, 26, 46, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 生成敌人
+            if (!waveComplete && enemies.length < Math.min(8 + wave, 15) && enemiesSpawned < enemiesPerWave) {
+                if (Math.random() < 0.05) spawnEnemy();
+            }
+            
+            // 检查波次完成
+            if (!waveComplete && enemies.length === 0 && enemiesSpawned >= enemiesPerWave) {
+                showUpgradeScreen();
+                return;
+            }
+            
+            // 堡垒更新
+            base.update();
+            
+            // 敌人更新
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                enemies[i].update();
+                if (enemies[i].health <= 0) {
+                    enemies.splice(i, 1);
+                }
+            }
+            
+            // 绘制敌人
+            for (let e of enemies) {
+                e.draw();
+            }
+            
+            // 绘制堡垒
+            base.draw();
+            
+            // 更新粒子
+            updateParticles();
+            updateProjectiles();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // 初始绘制
+        resizeCanvas();
+        ctx.fillStyle = 'rgba(26, 26, 46, 1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // 绘制准备好的堡垒
+        base = new Base();
+        base.draw();
+        
+        ctx.fillStyle = '#fff';
+        ctx.font = '16px Microsoft YaHei';
+        ctx.textAlign = 'center';
+        ctx.fillText('点击下方按钮开始', canvas.width/2, canvas.height/2 + 80);
+    </script>
+</body>
+</html>

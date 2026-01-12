@@ -13,554 +13,12 @@
 
         body {
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: 
-                radial-gradient(ellipse at 15% 15%, rgba(0, 245, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(ellipse at 85% 85%, rgba(255, 107, 157, 0.08) 0%, transparent 40%),
-                radial-gradient(ellipse at 50% 50%, rgba(102, 126, 234, 0.05) 0%, transparent 60%),
-                linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            background: #0a0a1a;
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             color: #fff;
-            padding: 20px;
-        }
-
-        h1 {
-            margin: 0 0 30px 0;
-            font-size: 2.5rem;
-            font-weight: 300;
-            letter-spacing: 8px;
-            text-align: center;
-            background: linear-gradient(135deg, #00f5ff 0%, #667eea 50%, #ff6b9d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(0, 245, 255, 0.3);
-        }
-
-        .game-container {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 50px;
-        }
-
-        /* 左侧规则 */
-        .rules-left {
-            width: 200px;
-            text-align: right;
-            padding: 20px 0;
-        }
-
-        .rules-left h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 18px;
-            letter-spacing: 2px;
-            opacity: 0.9;
-        }
-
-        .rules-left ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .rules-left li {
-            margin: 12px 0;
-            padding-right: 22px;
-            font-size: 0.95rem;
-            opacity: 0.8;
-            position: relative;
-            line-height: 1.5;
-        }
-
-        .rules-left li::after {
-            content: '◆';
-            position: absolute;
-            right: 0;
-            color: #667eea;
-            font-size: 0.6rem;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        /* 右侧规则 */
-        .rules-right {
-            width: 200px;
-            text-align: left;
-            padding: 20px 0;
-        }
-
-        .rules-right h3 {
-            font-size: 1.2rem;
-            font-weight: 500;
-            margin-bottom: 18px;
-            letter-spacing: 2px;
-            opacity: 0.9;
-        }
-
-        .rules-right ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .rules-right li {
-            margin: 12px 0;
-            padding-left: 22px;
-            font-size: 0.95rem;
-            opacity: 0.8;
-            position: relative;
-            line-height: 1.5;
-        }
-
-        .rules-right li::before {
-            content: '◆';
-            position: absolute;
-            left: 0;
-            color: #667eea;
-            font-size: 0.6rem;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .highlight {
-            color: #ffd700;
-            font-weight: 500;
-        }
-
-        /* 中心游戏区 */
-        .center-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .game-info {
-            width: 100%;
-            margin-bottom: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status {
-            font-size: 1.3rem;
-            padding: 12px 30px;
-            border-radius: 50px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            transition: all 0.4s ease;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .status.black {
-            border-color: rgba(0, 245, 255, 0.3);
-            box-shadow: 0 0 20px rgba(0, 245, 255, 0.1), inset 0 0 20px rgba(0, 245, 255, 0.05);
-        }
-
-        .status.white {
-            border-color: rgba(255, 107, 157, 0.3);
-            box-shadow: 0 0 20px rgba(255, 107, 157, 0.1), inset 0 0 20px rgba(255, 107, 157, 0.05);
-        }
-
-        .circle-text {
-            color: #00f5ff;
-            text-shadow: 0 0 8px rgba(0, 245, 255, 0.6);
-        }
-
-        .cross-text {
-            color: #ff6b9d;
-            text-shadow: 0 0 8px rgba(255, 107, 157, 0.6);
-        }
-
-        .info-row {
-            display: flex;
-            gap: 30px;
-            font-size: 0.95rem;
-            opacity: 0.85;
-        }
-
-        /* 放大棋盘 */
-        .board {
-            display: grid;
-            grid-template-columns: repeat(3, 120px);
-            grid-template-rows: repeat(3, 120px);
-            gap: 10px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
-            backdrop-filter: blur(15px);
-            box-shadow: 
-                0 25px 60px rgba(0, 0, 0, 0.5),
-                0 0 40px rgba(0, 245, 255, 0.05),
-                0 0 40px rgba(255, 107, 157, 0.05);
-            position: relative;
-        }
-
-        .board::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(0, 245, 255, 0.3), rgba(255, 107, 157, 0.3));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-
-        .cell {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-user-select: none;
-            pointer-events: auto;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cell::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.08), transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .cell:hover {
-            transform: translateY(-3px);
-        }
-
-        body[data-current="black"] .cell:hover {
-            background: rgba(0, 245, 255, 0.08);
-            box-shadow: 0 10px 40px rgba(0, 245, 255, 0.3);
-            border-color: rgba(0, 245, 255, 0.5);
-        }
-
-        body[data-current="white"] .cell:hover {
-            background: rgba(255, 107, 157, 0.08);
-            box-shadow: 0 10px 40px rgba(255, 107, 157, 0.3);
-            border-color: rgba(255, 107, 157, 0.5);
-        }
-
-        .cell:hover::before {
-            opacity: 1;
-        }
-
-        /* 棋子样式 - ○ */
-        .cell.black {
-            background: transparent;
-            box-shadow: none;
-        }
-
-        .cell.black .piece {
-            width: 70%;
-            height: 70%;
-            animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: drop-shadow(0 0 8px rgba(0, 245, 255, 0.6));
-        }
-
-        .cell.black .piece svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* 棋子样式 - × */
-        .cell.white {
-            background: transparent;
-            box-shadow: none;
-        }
-
-        .cell.white .piece {
-            width: 70%;
-            height: 70%;
-            animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: drop-shadow(0 0 8px rgba(255, 107, 157, 0.6));
-        }
-
-        .cell.white .piece svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        @keyframes dropIn {
-            0% {
-                transform: translateY(-60px) scale(0.8);
-                opacity: 0;
-            }
-            60% {
-                transform: translateY(5px) scale(1.05);
-            }
-            100% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
-
-        .cell.disappear {
-            animation: none;
-        }
-
-        .cell.disappear .piece {
-            animation: fadeOut 0.5s ease forwards;
-        }
-
-        @keyframes fadeOut {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(0.3);
-                opacity: 0;
-            }
-        }
-
-        /* 获胜线高亮 */
-        .cell.win {
-            animation: winPulse 0.8s ease-in-out infinite;
-        }
-
-        @keyframes winPulse {
-            0%, 100% {
-                box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
-            }
-            50% {
-                box-shadow: 0 0 50px rgba(255, 215, 0, 0.9), 0 0 70px rgba(255, 215, 0, 0.5);
-            }
-        }
-
-        /* 获胜弹窗 */
-        .winner-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.5s ease;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .winner-content {
-            text-align: center;
-            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        @keyframes scaleIn {
-            from {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .winner-content h2 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            font-weight: 300;
-            letter-spacing: 4px;
-        }
-
-        .winner-content h2.black {
-            color: #505050;
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.6), 0 0 80px rgba(255, 255, 255, 0.4);
-        }
-
-        .winner-content h2.white {
-            color: #f0f0f0;
-            text-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 0 80px rgba(255, 255, 255, 0.6);
-        }
-
-        .winner-content .trophy {
-            font-size: 5rem;
-            margin-bottom: 30px;
-            animation: bounce 1s ease infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
-        }
-
-        .btn {
-            padding: 16px 50px;
-            font-size: 1.2rem;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #fff;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-            font-weight: 500;
-            letter-spacing: 2px;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
-        }
-
-        /* 模式选择界面 */
-        .mode-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: fadeIn 0.5s ease;
-            z-index: 2000;
-            backdrop-filter: blur(10px);
-        }
-
-        .mode-overlay.hidden {
-            display: none;
-        }
-
-        .mode-content {
-            text-align: center;
-            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .mode-content h2 {
-            font-size: 1.8rem;
-            font-weight: 300;
-            letter-spacing: 4px;
-            margin-bottom: 40px;
-            background: linear-gradient(90deg, #fff, #a0a0ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .mode-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .mode-btn {
-            padding: 20px 45px;
-            font-size: 1.2rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 18px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            transition: all 0.3s ease;
-            font-weight: 400;
-            letter-spacing: 2px;
-            min-width: 200px;
-        }
-
-        .mode-btn:hover {
-            background: rgba(102, 126, 234, 0.3);
-            border-color: #667eea;
-            transform: translateY(-3px) scale(1.03);
-        }
-
-        .mode-btn .icon {
-            display: block;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-
-        .mode-btn .desc {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-top: 8px;
-            letter-spacing: 1px;
-        }
-
-        /* 切换模式按钮 */
-        .switch-mode-btn {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            padding: 8px 16px;
-            font-size: 0.8rem;
-            border: 1px solid rgba(0, 245, 255, 0.3);
-            border-radius: 20px;
-            cursor: pointer;
-            background: rgba(0, 245, 255, 0.1);
-            color: #00f5ff;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-
-        .switch-mode-btn:hover {
-            background: rgba(0, 245, 255, 0.2);
-            border-color: #00f5ff;
-            box-shadow: 0 0 15px rgba(0, 245, 255, 0.3);
-        }
-
-        /* AI思考中 */
-        .cell.thinking {
-            cursor: wait;
-        }
-
-        .cell.thinking::after {
-            content: '';
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #667eea;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* 纯手机模式样式 - 自适应所有屏幕 */
-        body {
-            min-height: 100vh;
-            height: auto;
             padding: 15px;
             padding-top: 55px;
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         h1 {
@@ -568,15 +26,16 @@
             top: 10px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: clamp(1rem, 4vw, 1.4rem);
+            font-size: 18px;
+            font-weight: 300;
             letter-spacing: 2px;
             margin: 0;
             z-index: 100;
+            white-space: nowrap;
             background: linear-gradient(90deg, #fff, #a0a0ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            white-space: nowrap;
         }
 
         .game-container {
@@ -585,11 +44,7 @@
             align-items: center;
             width: 100%;
             max-width: 500px;
-        }
-
-        /* 隐藏两侧规则区 */
-        .rules-left, .rules-right {
-            display: none;
+            margin: 0 auto;
         }
 
         .center-area {
@@ -609,73 +64,91 @@
         }
 
         .status {
-            font-size: clamp(1rem, 4vw, 1.3rem);
+            font-size: 18px;
             padding: 8px 25px;
             border-radius: 25px;
-            display: inline-block;
+            background: rgba(255, 255, 255, 0.05);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             white-space: nowrap;
+            min-height: 40px;
+            line-height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status.black {
+            border-color: rgba(0, 245, 255, 0.3);
+        }
+
+        .status.white {
+            border-color: rgba(255, 107, 157, 0.3);
+        }
+
+        .circle-text {
+            color: #00f5ff;
+        }
+
+        .cross-text {
+            color: #ff6b9d;
         }
 
         .info-row {
             display: flex;
             justify-content: center;
             gap: 15px;
-            font-size: clamp(0.75rem, 2.5vw, 0.9rem);
+            font-size: 14px;
             padding: 6px 15px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
             flex-wrap: wrap;
         }
 
-        /* 棋盘 - 自适应大小 */
         .board {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: clamp(4px, 2vw, 10px);
-            padding: clamp(8px, 3vw, 20px);
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: clamp(10px, 3vw, 20px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
-            width: min(90vw, 400px);
-            height: min(90vw, 400px);
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            width: min(90vw, 350px);
+            height: min(90vw, 350px);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            padding: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: relative;
-        }
-
-        .board::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 2px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
         }
 
         .cell {
-            width: 100%;
-            height: 100%;
-            aspect-ratio: 1;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: clamp(6px, 2vw, 14px);
+            width: 33.33%;
+            height: 33.33%;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
             cursor: pointer;
-            touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
             -webkit-user-select: none;
-            pointer-events: auto;
+            user-select: none;
             transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.06);
             border: 2px solid rgba(255, 255, 255, 0.12);
-            position: relative;
-            overflow: hidden;
         }
+
+        .cell:nth-child(1) { border-radius: 10px 0 0 0; }
+        .cell:nth-child(3) { border-radius: 0 10px 0 0; }
+        .cell:nth-child(7) { border-radius: 0 0 0 10px; }
+        .cell:nth-child(9) { border-radius: 0 0 10px 0; }
 
         .cell:hover, .cell:active {
             transform: scale(0.95);
@@ -684,57 +157,67 @@
         body[data-current="black"] .cell:hover, 
         body[data-current="black"] .cell:active {
             background: rgba(0, 245, 255, 0.12);
-            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
             border-color: rgba(0, 245, 255, 0.4);
         }
 
         body[data-current="white"] .cell:hover, 
         body[data-current="white"] .cell:active {
             background: rgba(255, 107, 157, 0.12);
-            box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
             border-color: rgba(255, 107, 157, 0.4);
         }
 
-        .cell::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.1), transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .cell:hover::before {
-            opacity: 1;
-        }
-
-        /* 棋子 */
-        .cell.black .piece,
-        .cell.white .piece {
-            width: 70%;
-            height: 70%;
+        /* 棋子SVG样式 */
+        .piece-svg {
+            width: 60%;
+            height: 60%;
             animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .cell.black .piece {
-            filter: drop-shadow(0 0 6px rgba(0, 245, 255, 0.6));
+        .piece-svg circle {
+            fill: none;
+            stroke: #00f5ff;
+            stroke-width: 10;
         }
 
-        .cell.white .piece {
-            filter: drop-shadow(0 0 6px rgba(255, 107, 157, 0.6));
+        .piece-svg line {
+            stroke: #ff6b9d;
+            stroke-width: 10;
+            stroke-linecap: round;
         }
 
-        .cell.black .piece svg,
-        .cell.white .piece svg {
-            width: 100%;
-            height: 100%;
+        @keyframes dropIn {
+            0% {
+                transform: translateY(-30px) scale(0.8);
+                opacity: 0;
+            }
+            60% {
+                transform: translateY(5px) scale(1.05);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
         }
 
-        /* 底部提示 */
+        .cell.disappear .piece-svg {
+            animation: fadeOut 0.5s ease forwards;
+        }
+
+        @keyframes fadeOut {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+        }
+
         .game-footer {
             display: flex;
             justify-content: center;
-            gap: clamp(8px, 2vw, 15px);
+            gap: 15px;
             margin-top: 15px;
             padding: 8px;
             flex-wrap: wrap;
@@ -745,16 +228,15 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            font-size: clamp(0.65rem, 2vw, 0.8rem);
+            font-size: 12px;
         }
 
-        /* 切换模式按钮 */
         .switch-mode-btn {
             position: fixed;
             top: 12px;
             right: 10px;
             padding: 6px 14px;
-            font-size: clamp(0.7rem, 2.5vw, 0.9rem);
+            font-size: 12px;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 20px;
             cursor: pointer;
@@ -784,25 +266,24 @@
             justify-content: center;
             animation: fadeIn 0.5s ease;
             z-index: 2000;
-            backdrop-filter: blur(10px);
             padding: 20px;
+        }
+
+        .mode-overlay.hidden {
+            display: none;
         }
 
         .mode-content {
             text-align: center;
-            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-width: 300px;
         }
 
         .mode-content h2 {
-            font-size: clamp(1.4rem, 5vw, 2rem);
+            font-size: 20px;
             font-weight: 300;
             letter-spacing: 3px;
-            margin-bottom: 35px;
-            background: linear-gradient(135deg, #00f5ff 0%, #ff6b9d 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 30px;
+            color: #fff;
         }
 
         .mode-buttons {
@@ -813,10 +294,10 @@
         }
 
         .mode-btn {
-            padding: 18px 35px;
-            font-size: clamp(1rem, 3.5vw, 1.2rem);
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
+            padding: 15px 30px;
+            font-size: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
             cursor: pointer;
             background: rgba(255, 255, 255, 0.05);
             color: #fff;
@@ -831,20 +312,19 @@
         .mode-btn:hover {
             background: rgba(0, 245, 255, 0.15);
             border-color: #00f5ff;
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(0, 245, 255, 0.2);
+            transform: translateY(-3px);
         }
 
         .mode-btn .icon {
             display: block;
-            font-size: clamp(2rem, 8vw, 3rem);
-            margin-bottom: 10px;
+            font-size: 28px;
+            margin-bottom: 8px;
         }
 
         .mode-btn .desc {
-            font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+            font-size: 12px;
             opacity: 0.7;
-            margin-top: 8px;
+            margin-top: 6px;
             letter-spacing: 1px;
         }
 
@@ -872,18 +352,21 @@
             justify-content: center;
             animation: fadeIn 0.5s ease;
             z-index: 1000;
-            backdrop-filter: blur(15px);
             padding: 20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .winner-content {
             text-align: center;
-            animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-width: 320px;
         }
 
         .winner-content h2 {
-            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            font-size: 28px;
             margin-bottom: 15px;
             font-weight: 300;
             letter-spacing: 3px;
@@ -891,41 +374,38 @@
 
         .winner-content h2.black {
             color: #00f5ff;
-            text-shadow: 0 0 30px rgba(0, 245, 255, 0.6);
         }
 
         .winner-content h2.white {
             color: #ff6b9d;
-            text-shadow: 0 0 30px rgba(255, 107, 157, 0.6);
         }
 
         .winner-content .trophy {
-            font-size: clamp(3rem, 10vw, 5rem);
+            font-size: 48px;
             margin-bottom: 20px;
-            animation: bounce 1s ease infinite;
         }
 
         .btn {
             padding: 14px 40px;
-            font-size: clamp(1rem, 3.5vw, 1.2rem);
+            font-size: 16px;
             border: none;
             border-radius: 50px;
             cursor: pointer;
             background: linear-gradient(135deg, #00f5ff 0%, #667eea 100%);
             color: #0a0a1a;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(0, 245, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 245, 255, 0.3);
             font-weight: 600;
             letter-spacing: 2px;
             margin-top: 10px;
         }
 
         .btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(0, 245, 255, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 245, 255, 0.5);
         }
 
-        /* 横屏模式优化 */
+        /* 横屏模式 */
         @media (orientation: landscape) and (max-height: 500px) {
             body {
                 flex-direction: row;
@@ -939,9 +419,7 @@
             h1 {
                 position: absolute;
                 top: 5px;
-                left: 50%;
-                transform: translateX(-50%);
-                font-size: clamp(0.8rem, 3vw, 1rem);
+                font-size: 14px;
             }
 
             .game-container {
@@ -959,33 +437,26 @@
             .game-info {
                 margin-bottom: 0;
                 width: auto;
-                flex-direction: column;
-                gap: 5px;
+                flex-direction: row;
+                gap: 10px;
             }
 
             .status {
-                position: static;
-                font-size: clamp(0.8rem, 2.5vw, 1rem);
+                font-size: 14px;
                 padding: 5px 15px;
             }
 
             .info-row {
-                position: static;
-                font-size: clamp(0.65rem, 2vw, 0.8rem);
-                padding: 4px 10px;
-                gap: 10px;
+                flex-direction: column;
+                gap: 5px;
+                font-size: 12px;
             }
 
             .board {
-                width: min(40vh, 300px);
-                height: min(40vh, 300px);
-                gap: clamp(3px, 1vw, 8px);
-                padding: clamp(6px, 2vw, 12px);
-            }
-
-            .cell {
-                width: 100%;
-                height: 100%;
+                width: 280px;
+                height: 280px;
+                gap: 6px;
+                padding: 8px;
             }
 
             .game-footer {
@@ -1001,34 +472,12 @@
                 top: 5px;
                 right: 8px;
                 padding: 5px 12px;
-                font-size: clamp(0.65rem, 2vw, 0.8rem);
-            }
-
-            .mode-buttons {
-                flex-direction: row;
-            }
-
-            .mode-btn, .home-btn {
-                min-width: 150px;
-                padding: 15px 25px;
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body data-current="black">
-    <!-- SVG棋子定义 -->
-    <svg style="display: none;">
-        <defs>
-            <!-- 圆形棋子○ - 青色 -->
-            <symbol id="circle-piece" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="42" fill="none" stroke="#00f5ff" stroke-width="12" />
-            </symbol>
-            <!-- 叉号棋子× - 粉色 -->
-            <symbol id="cross-piece" viewBox="0 0 100 100">
-                <path d="M8 8 L92 92 M92 8 L8 92" stroke="#ff6b9d" stroke-width="12" stroke-linecap="round" />
-            </symbol>
-        </defs>
-    </svg>
     <h1>井字棋 · 轮回</h1>
 
     <!-- 模式选择界面 -->
@@ -1037,17 +486,17 @@
             <h2>选择对战模式</h2>
             <div class="mode-buttons">
                 <button class="mode-btn" onclick="selectMode('pvp')">
-                    <span class="icon">👥</span>
+                    <span class="icon">&#128101;</span>
                     双人对战
                     <div class="desc">与朋友面对面PK</div>
                 </button>
                 <button class="mode-btn" onclick="selectMode('pve')">
-                    <span class="icon">🤖</span>
+                    <span class="icon">&#129302;</span>
                     人机对战
                     <div class="desc">挑战AI电脑玩家</div>
                 </button>
                 <button class="mode-btn home-btn" onclick="goHome()">
-                    <span class="icon">🏠</span>
+                    <span class="icon">&#127968;</span>
                     返回首页
                     <div class="desc">选择其他游戏</div>
                 </button>
@@ -1059,304 +508,256 @@
     <button class="switch-mode-btn" onclick="showModeSelect()">切换模式</button>
 
     <div class="game-container">
-        <!-- 中心游戏区 -->
         <div class="center-area">
             <div class="game-info">
-                <div class="status black" id="status">当前: <span class="circle-text">○</span> 圆</div>
+                <div class="status black" id="status">当前: <span class="circle-text">&#9679;</span> 圆</div>
                 <div class="info-row">
-                    <span id="piecesCount">黑方: 0/3 | 白方: 0/3</span>
+                    <span id="piecesCount">圆: 0/3 | 叉: 0/3</span>
                     <span id="stepCounter">回合: 0</span>
                 </div>
             </div>
 
-            <div class="board" id="board"></div>
+            <div class="board" id="board">
+                <div class="cell" data-index="0"></div>
+                <div class="cell" data-index="1"></div>
+                <div class="cell" data-index="2"></div>
+                <div class="cell" data-index="3"></div>
+                <div class="cell" data-index="4"></div>
+                <div class="cell" data-index="5"></div>
+                <div class="cell" data-index="6"></div>
+                <div class="cell" data-index="7"></div>
+                <div class="cell" data-index="8"></div>
+            </div>
 
-            <!-- 底部提示 -->
             <div class="game-footer">
-                <span>黑先手</span>
-                <span>各3子</span>
-                <span>落4消最早</span>
-                <span>连3获胜</span>
+                <span>规则: 三子成一线即可获胜</span>
             </div>
         </div>
     </div>
 
     <script>
-        const board = document.getElementById('board');
-        const statusEl = document.getElementById('status');
-        const piecesCountEl = document.getElementById('piecesCount');
-        const stepCounterEl = document.getElementById('stepCounter');
-        const modeOverlay = document.getElementById('modeOverlay');
+        var cells = [null, null, null, null, null, null, null, null, null];
+        var blackPieces = [];
+        var whitePieces = [];
+        var currentPlayer = 'black';
+        var gameMode = 'pvp';
+        var stepCount = 0;
+        var gameActive = true;
+        var winningLine = null;
 
-        let cells = Array(9).fill(null);
-        let blackPieces = [];
-        let whitePieces = [];
-        let currentPlayer = 'black';
-        let gameOver = false;
-        let stepCount = 0;
-        let winCombo = [];
-        let gameMode = 'pvp'; // 'pvp' 双人模式, 'pve' 人机模式
-        let isAiThinking = false;
+        var board = document.getElementById('board');
+        var statusEl = document.getElementById('status');
+        var piecesCountEl = document.getElementById('piecesCount');
+        var stepCounterEl = document.getElementById('stepCounter');
+        var modeOverlay = document.getElementById('modeOverlay');
 
-        // 选择游戏模式
         function selectMode(mode) {
             gameMode = mode;
             modeOverlay.classList.add('hidden');
             restart();
         }
 
-        // 显示模式选择
         function showModeSelect() {
             modeOverlay.classList.remove('hidden');
         }
 
-        // 返回首页
+        function showModeSelectFromWin() {
+            var overlays = document.querySelectorAll('.winner-overlay');
+            for (var i = 0; i < overlays.length; i++) {
+                overlays[i].remove();
+            }
+            modeOverlay.classList.remove('hidden');
+        }
+
         function goHome() {
             window.location.href = 'https://blackc009.github.io/mini_games/';
         }
 
-        // 初始化棋盘
-        function initBoard() {
-            board.innerHTML = '';
-            for (let i = 0; i < 9; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                cell.dataset.index = i;
+        function restart() {
+            cells = [null, null, null, null, null, null, null, null, null];
+            blackPieces = [];
+            whitePieces = [];
+            currentPlayer = 'black';
+            stepCount = 0;
+            gameActive = true;
+            winningLine = null;
+            
+            var cellElements = board.children;
+            for (var i = 0; i < cellElements.length; i++) {
+                cellElements[i].className = 'cell';
+                cellElements[i].innerHTML = '';
+            }
+            
+            updateStatus();
+        }
 
-                // 使用pointer事件更兼容移动端
-                cell.addEventListener('pointerdown', (e) => {
-                    e.preventDefault();
-                    handleClick(i);
-                });
-
-                board.appendChild(cell);
+        function getPieceSVG(type) {
+            if (type === 'black') {
+                return '<svg class="piece-svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40"></circle></svg>';
+            } else {
+                return '<svg class="piece-svg" viewBox="0 0 100 100"><line x1="20" y1="20" x2="80" y2="80"></line><line x1="80" y1="20" x2="20" y2="80"></line></svg>';
             }
         }
 
-        // 处理点击
-        function handleClick(index) {
-            if (gameOver || cells[index] || isAiThinking) return;
-
-            // 人机模式下，玩家只能执黑
-            if (gameMode === 'pve' && currentPlayer === 'white') return;
-
-            placePiece(index);
-
-            // 人机模式：AI自动下一步
-            if (!gameOver && gameMode === 'pve' && currentPlayer === 'white') {
-                isAiThinking = true;
-                board.style.opacity = '0.7';
-                setTimeout(() => {
-                    aiMove();
-                    board.style.opacity = '1';
-                    isAiThinking = false;
-                }, 600 + Math.random() * 400);
-            }
-        }
-
-        // 放置棋子
         function placePiece(index) {
-            const playerPieces = currentPlayer === 'black' ? blackPieces : whitePieces;
+            if (!gameActive || cells[index] !== null) return;
+
+            var playerPieces = currentPlayer === 'black' ? blackPieces : whitePieces;
             stepCount++;
 
-            // 检查是否超过3子
             if (playerPieces.length >= 3) {
-                // 移除最早下的棋子
-                const oldestIndex = playerPieces.shift();
+                var oldestIndex = playerPieces.shift();
                 cells[oldestIndex] = null;
-                const oldestCell = board.children[oldestIndex];
+                var oldestCell = board.children[oldestIndex];
                 oldestCell.className = 'cell disappear';
-                setTimeout(() => {
+                setTimeout(function() {
                     oldestCell.className = 'cell';
                     oldestCell.innerHTML = '';
                 }, 500);
             }
 
-            // 放置新棋子
             cells[index] = currentPlayer;
             playerPieces.push(index);
 
-            const cell = board.children[index];
-            cell.className = `cell ${currentPlayer}`;
-            const symbolId = currentPlayer === 'black' ? '#circle-piece' : '#cross-piece';
-            cell.innerHTML = `<div class="piece"><svg><use href="${symbolId}"></use></svg></div>`;
+            var cell = board.children[index];
+            cell.className = 'cell ' + currentPlayer;
+            cell.innerHTML = getPieceSVG(currentPlayer);
 
-            // 检查获胜
-            const winResult = checkWin(currentPlayer);
+            var winResult = checkWin(currentPlayer);
             if (winResult) {
-                gameOver = true;
-                winCombo = winResult;
-                highlightWinners();
-                setTimeout(() => showWinner(currentPlayer), 600);
+                gameActive = false;
+                winningLine = winResult;
+                showWinner(currentPlayer);
                 return;
             }
 
-            // 切换玩家
             currentPlayer = currentPlayer === 'black' ? 'white' : 'black';
             updateStatus();
+
+            if (gameMode === 'pve' && currentPlayer === 'white' && gameActive) {
+                setTimeout(function() {
+                    aiMove();
+                }, 600);
+            }
         }
 
-        // AI移动逻辑
-        function aiMove() {
-            if (gameOver) return;
-
-            const availableMoves = cells.map((c, i) => c === null ? i : null).filter(i => i !== null);
-
-            if (availableMoves.length === 0) return;
-
-            let move;
-
-            // 策略：1. 尝试获胜 2. 阻止对手获胜 3. 中心优先 4. 随机
-            move = findWinningMove('white');
-            if (move === null) {
-                move = findWinningMove('black');
-            }
-            if (move === null) {
-                move = findStrategicMove();
-            }
-            if (move === null) {
-                move = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-            }
-
-            placePiece(move);
-        }
-
-        // 找到能获胜的位置
-        function findWinningMove(player) {
-            const wins = [
+        function checkWin(player) {
+            var wins = [
                 [0, 1, 2], [3, 4, 5], [6, 7, 8],
                 [0, 3, 6], [1, 4, 7], [2, 5, 8],
                 [0, 4, 8], [2, 4, 6]
             ];
 
-            for (const combo of wins) {
-                const values = combo.map(i => cells[i]);
-                const playerCount = values.filter(v => v === player).length;
-                const emptyCount = values.filter(v => v === null).length;
-
-                if (playerCount === 2 && emptyCount === 1) {
-                    const emptyIndex = combo.find(i => cells[i] === null);
-                    return emptyIndex;
+            for (var i = 0; i < wins.length; i++) {
+                var line = wins[i];
+                if (cells[line[0]] === player && 
+                    cells[line[1]] === player && 
+                    cells[line[2]] === player) {
+                    return line;
                 }
             }
             return null;
         }
 
-        // 策略性移动：优先中心、角落
-        function findStrategicMove() {
-            const center = 4;
-            const corners = [0, 2, 6, 8];
-            const edges = [1, 3, 5, 7];
-            const availableMoves = cells.map((c, i) => c === null ? i : null).filter(i => i !== null);
+        function showWinner(winner) {
+            var overlay = document.createElement('div');
+            overlay.className = 'winner-overlay';
 
-            // 优先中心
-            if (cells[center] === null) return center;
+            var isBlack = winner === 'black';
+            var winnerSymbol = isBlack ? 
+                '<span class="circle-text">&#9679;</span>' : 
+                '<span class="cross-text">&#10005;</span>';
+            var winnerName = gameMode === 'pve' && !isBlack ? 'AI 电脑' : (isBlack ? '圆' : '叉');
 
-            // 优先角落
-            const availableCorners = corners.filter(i => availableMoves.includes(i));
-            if (availableCorners.length > 0) {
-                return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-            }
+            overlay.innerHTML = '<div class="winner-content">' +
+                '<div class="trophy">&#127942;</div>' +
+                '<h2 class="' + winner + '">' + winnerSymbol + ' ' + winnerName + ' 获胜!</h2>' +
+                '<button class="btn" id="restartBtn">再来一局</button>' +
+                '<button class="btn" id="switchModeBtn" style="margin-top: 15px; background: rgba(255,255,255,0.1); color: #fff;">切换模式</button>' +
+                '</div>';
 
-            // 边缘
-            const availableEdges = edges.filter(i => availableMoves.includes(i));
-            if (availableEdges.length > 0) {
-                return availableEdges[Math.floor(Math.random() * availableEdges.length)];
-            }
+            document.body.appendChild(overlay);
 
-            return null;
-        }
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                overlay.remove();
+                restart();
+            });
 
-        // 检查获胜
-        function checkWin(player) {
-            const wins = [
-                [0, 1, 2], [3, 4, 5], [6, 7, 8], // 横
-                [0, 3, 6], [1, 4, 7], [2, 5, 8], // 竖
-                [0, 4, 8], [2, 4, 6]             // 斜
-            ];
-
-            for (const combo of wins) {
-                if (combo.every(index => cells[index] === player)) {
-                    return combo;
-                }
-            }
-            return null;
-        }
-
-        // 高亮获胜棋子
-        function highlightWinners() {
-            winCombo.forEach(index => {
-                board.children[index].classList.add('win');
+            document.getElementById('switchModeBtn').addEventListener('click', function() {
+                overlay.remove();
+                modeOverlay.classList.remove('hidden');
             });
         }
 
-        // 更新状态显示
         function updateStatus() {
-            let playerText;
+            var playerText;
             if (gameMode === 'pve') {
                 playerText = currentPlayer === 'black' ? 
-                    '<span class="circle-text">○</span> 玩家 (你)' : 
-                    '<span class="cross-text">×</span> AI 电脑';
+                    '<span class="circle-text">&#9679;</span> 玩家 (你)' : 
+                    '<span class="cross-text">&#10005;</span> AI 电脑';
             } else {
                 playerText = currentPlayer === 'black' ? 
-                    '<span class="circle-text">○</span> 圆' : 
-                    '<span class="cross-text">×</span> 叉';
+                    '<span class="circle-text">&#9679;</span> 圆' : 
+                    '<span class="cross-text">&#10005;</span> 叉';
             }
-            statusEl.innerHTML = `当前: ${playerText}`;
-            statusEl.className = `status ${currentPlayer}`;
+            statusEl.innerHTML = '当前: ' + playerText;
+            statusEl.className = 'status ' + currentPlayer;
             document.body.dataset.current = currentPlayer;
-            piecesCountEl.textContent = `圆: ${blackPieces.length}/3 | 叉: ${whitePieces.length}/3`;
-            stepCounterEl.textContent = `回合: ${stepCount}`;
+            piecesCountEl.textContent = '圆: ' + blackPieces.length + '/3 | 叉: ' + whitePieces.length + '/3';
+            stepCounterEl.textContent = '回合: ' + stepCount;
         }
 
-        // 显示获胜者
-        function showWinner(winner) {
-            const overlay = document.createElement('div');
-            overlay.className = 'winner-overlay';
+        function aiMove() {
+            if (!gameActive) return;
 
-            const isBlack = winner === 'black';
-            const winnerSymbol = isBlack ? 
-                '<span class="circle-text">○</span>' : 
-                '<span class="cross-text">×</span>';
-            const winnerName = gameMode === 'pve' && !isBlack ? 'AI 电脑' : (isBlack ? '圆' : '叉');
+            var emptyIndices = [];
+            for (var i = 0; i < cells.length; i++) {
+                if (cells[i] === null) {
+                    emptyIndices.push(i);
+                }
+            }
 
-            overlay.innerHTML = `
-                <div class="winner-content">
-                    <div class="trophy">🏆</div>
-                    <h2 class="${winner}">${winnerSymbol} ${winnerName} 获胜!</h2>
-                    <button class="btn" onclick="restart()">再来一局</button>
-                    <button class="btn" style="margin-top: 15px; background: rgba(255,255,255,0.1);" onclick="showModeSelectFromWin()">切换模式</button>
-                </div>
-            `;
+            if (emptyIndices.length === 0) return;
 
-            document.body.appendChild(overlay);
+            for (var i = 0; i < emptyIndices.length; i++) {
+                cells[emptyIndices[i]] = 'white';
+                if (checkWin('white')) {
+                    cells[emptyIndices[i]] = null;
+                    placePiece(emptyIndices[i]);
+                    return;
+                }
+                cells[emptyIndices[i]] = null;
+            }
+
+            for (var i = 0; i < emptyIndices.length; i++) {
+                cells[emptyIndices[i]] = 'black';
+                if (checkWin('black')) {
+                    cells[emptyIndices[i]] = null;
+                    placePiece(emptyIndices[i]);
+                    return;
+                }
+                cells[emptyIndices[i]] = null;
+            }
+
+            if (cells[4] === null) {
+                placePiece(4);
+                return;
+            }
+
+            var randomIndex = Math.floor(Math.random() * emptyIndices.length);
+            placePiece(emptyIndices[randomIndex]);
         }
 
-        // 从获胜弹窗切换模式
-        function showModeSelectFromWin() {
-            document.querySelector('.winner-overlay')?.remove();
-            modeOverlay.classList.remove('hidden');
+        var cellElements = board.children;
+        for (var i = 0; i < cellElements.length; i++) {
+            cellElements[i].addEventListener('click', (function(index) {
+                return function() {
+                    placePiece(index);
+                };
+            })(i));
         }
 
-        // 重新开始
-        function restart() {
-            cells = Array(9).fill(null);
-            blackPieces = [];
-            whitePieces = [];
-            currentPlayer = 'black';
-            gameOver = false;
-            stepCount = 0;
-            winCombo = [];
-            isAiThinking = false;
-
-            document.querySelector('.winner-overlay')?.remove();
-            initBoard();
-            updateStatus();
-        }
-
-        // 启动游戏时显示模式选择
-        // initBoard();
-        // updateStatus();
+        updateStatus();
     </script>
 </body>
 </html>

@@ -13,13 +13,19 @@
 
         body {
             min-height: 100vh;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
             flex-direction: column;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
-            background: 
-                radial-gradient(ellipse at 15% 15%, rgba(0, 245, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(ellipse at 85% 85%, rgba(255, 107, 157, 0.08) 0%, transparent 40%),
-                linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: #1a1a2e;
+            background: -webkit-gradient(ellipse at 15% 15%, rgba(0, 245, 255, 0.08) 0%, transparent 40%), -webkit-gradient(ellipse at 85% 85%, rgba(255, 107, 157, 0.08) 0%, transparent 40%), -webkit-linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(ellipse at 15% 15%, rgba(0, 245, 255, 0.08) 0%, transparent 40%), linear-gradient(ellipse at 85% 85%, rgba(255, 107, 157, 0.08) 0%, transparent 40%), linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             color: #fff;
             padding: 15px;
@@ -27,11 +33,14 @@
 
         h1 {
             width: 100%;
-            font-size: clamp(1.3rem, 5vw, 1.8rem);
+            font-size: 24px;
+            font-size: -webkit-calc(1.3rem + 1vw);
+            font-size: calc(1.3rem + 1vw);
             font-weight: 300;
             letter-spacing: 3px;
             text-align: center;
             margin-bottom: 8px;
+            background: -webkit-linear-gradient(135deg, #00f5ff 0%, #667eea 50%, #ff6b9d 100%);
             background: linear-gradient(135deg, #00f5ff 0%, #667eea 50%, #ff6b9d 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -40,7 +49,9 @@
 
         .date-display {
             width: 100%;
-            font-size: clamp(0.9rem, 3.5vw, 1.2rem);
+            font-size: 16px;
+            font-size: -webkit-calc(0.9rem + 0.5vw);
+            font-size: calc(0.9rem + 0.5vw);
             font-weight: 300;
             letter-spacing: 2px;
             text-align: center;
@@ -50,11 +61,14 @@
 
         .time-display {
             width: 100%;
-            font-size: clamp(2.5rem, 12vw, 4rem);
+            font-size: 32px;
+            font-size: -webkit-calc(2rem + 2vw);
+            font-size: calc(2rem + 2vw);
             font-weight: 200;
             letter-spacing: 4px;
             text-align: center;
             margin-bottom: 20px;
+            background: -webkit-linear-gradient(135deg, #00f5ff 0%, #ff6b9d 100%);
             background: linear-gradient(135deg, #00f5ff 0%, #ff6b9d 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -62,7 +76,9 @@
         }
 
         .games-grid {
+            display: -ms-grid;
             display: grid;
+            -ms-grid-columns: repeat(4, 1fr);
             grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             width: 100%;
@@ -70,14 +86,13 @@
         }
 
         .game-card {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 10px;
             cursor: pointer;
+            -webkit-transition: all 0.2s ease;
             transition: all 0.2s ease;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
@@ -85,14 +100,26 @@
         .game-card:hover {
             background: rgba(0, 245, 255, 0.08);
             border-color: rgba(0, 245, 255, 0.25);
+            -webkit-transform: scale(0.95);
             transform: scale(0.95);
         }
 
         .game-card .icon {
-            width: 60%;
-            height: 60%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            width: 50%;
+            height: 50%;
+            display: -webkit-box;
+            display: -ms-flexbox;
             display: flex;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
             align-items: center;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
             justify-content: center;
             gap: 3px;
         }
@@ -100,14 +127,25 @@
         .game-card .icon svg {
             width: 45%;
             height: 100%;
-            filter: drop-shadow(0 0 4px rgba(0, 245, 255, 0.5)) drop-shadow(0 0 4px rgba(255, 107, 157, 0.5));
         }
 
         .game-card .name {
-            font-size: 0.7rem;
+            position: absolute;
+            bottom: 10%;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+            font-size: 12px;
             font-weight: 400;
             letter-spacing: 1px;
-            margin-top: 4px;
+            white-space: nowrap;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 0.8rem;
+            opacity: 0.5;
+            text-align: center;
         }
     </style>
 </head>
@@ -135,7 +173,7 @@
                 <svg><use href="#circle-piece"></use></svg>
                 <svg><use href="#cross-piece"></use></svg>
             </span>
-            <span class="name">井字棋-轮回</span>
+            <span class="name">井字棋</span>
         </a>
         <div class="game-card"></div>
         <div class="game-card"></div>
@@ -160,27 +198,33 @@
         <div class="game-card"></div>
     </div>
 
+    <div class="footer"></div>
+
     <script>
         function updateDateTime() {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = now.getMonth() + 1;
-            const day = now.getDate();
-            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
-            const weekday = weekdays[now.getDay()];
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = now.getMonth() + 1;
+            var day = now.getDate();
+            var weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            var weekday = weekdays[now.getDay()];
             
-            const dateDisplay = document.getElementById('dateDisplay');
+            var dateDisplay = document.getElementById('dateDisplay');
             if (dateDisplay) {
-                dateDisplay.textContent = `${year}年${month}月${day}日 ${weekday}`;
+                dateDisplay.textContent = year + '年' + month + '月' + day + '日 ' + weekday;
             }
 
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+            var seconds = now.getSeconds();
             
-            const timeDisplay = document.getElementById('timeDisplay');
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            
+            var timeDisplay = document.getElementById('timeDisplay');
             if (timeDisplay) {
-                timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+                timeDisplay.textContent = hours + ':' + minutes + ':' + seconds;
             }
         }
         updateDateTime();

@@ -53,21 +53,20 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-                    .game-board {
-                    display: flex;
-                    flex-wrap: wrap;
-                    justify-content: center;
-                    gap: 8px;
-                    max-width: 500px;
-                    margin: 0 auto;            padding: 15px;
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 15px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 15px;
         }
 
         .card {
-            width: calc(25% - 6px);
             aspect-ratio: 1;
-            max-width: 80px;
+            max-width: none;
             position: relative;
             cursor: pointer;
         }
@@ -234,7 +233,7 @@
     <div class="game-info">
         <div class="info-box">步数: <span id="moves">0</span></div>
         <div class="info-box">用时: <span id="time">00:00</span></div>
-        <div class="info-box">对: <span id="pairs">0</span>/6</div>
+        <div class="info-box">对: <span id="pairs">0</span>/8</div>
     </div>
 
     <div class="game-board" id="gameBoard"></div>
@@ -351,7 +350,7 @@
                 pairsEl.textContent = matchedPairs;
                 flippedCards = [];
 
-                if (matchedPairs === 6) {
+                if (matchedPairs === 8) {
                     gameWin();
                 }
             } else {
